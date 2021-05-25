@@ -8,8 +8,30 @@ Is a player's statistic for a season good because of his skills and talent, or b
 
 In addition, contracts in KHL tend to be relatively short-term for both the players and the staff. As such, they have less time to gain experience of playing together and might depend even more on how well the coaches can adapt to the constantly changing teams. Analysing the roles of coaches in their team's season performance is one of the other goals of this project.
 
+## Player-level analysis
+There are many different things you can ask the data about here.
+
+How indicative is the player's performance in past seasons of his potential in the next one? How many seasons should we take into consideration? How much changing a team affects the performance? Those questions, and many more, are going to be raised in this project.
+
+It is also possible to deeper look at specific players' performance metrics. Having a match-level data would give us enough data points to plot them over time and analyse the trends in an easier way. Perhaps a player is a very unstable one, prone to having periods of either outstanding performance or a terrible one.
+
 ## Team-level analysis
-While my aim is to gather more data to include both the coaches and the individual players into the models, some high-level exploratory analysis is necessary first. As such, I am going to be using a publicly available dataset from Kaggle on KHL game outcomes for 2008-2019. The link for it is provided at the end of this file.
+Here, my aim is to gather more data to include both the coaches and the individual players into the models that predict the outcome of a match. The main interest in such analysis is potentially being able to tell how well a team is performing compared to what their roster would suggest.
+
+On a very different yet important note, there already exists a system for evaluating the possible  outcomes of the match. It is called betting. The betting odds represent the probabilities of such events happening, so it would be very interesting to later compare our analysis against it.
+
+One way it could be compared is by using the created model before a new match to predict the outcome. Luckily for us, the KHL teams announce their roster some time before the match. Would our predictions be more accurate than the betting odds over a season? Who knows.
+
+## Project life cycle
+### In work
+At the current stage of the project, I am focusing on obtaining the data on each individual player. This includes not only personal information such as age and weight but also the statistics for every season he had played at least one match in and every match ever recorded for that player.
+
+The data is separated into Regular season and Playoff, since the two present a rather different style of play and not all players enjoy the opportunity of their team making it into the playoffs.
+
+### Next stage
+I am no longer going to use the dataset of the game outcomes from Kaggle. Both updating it and integrating it with my player-level data could create too many problems to be a viable strategy. Instead, I am going to attempt scraping the history of each team's matches over time the same way as was done for the players.
+
+The KHL website might not store the necessary data in an easy-to-access form. In that case, we can take an approach of reconstructing the statistics for a match by aggregating the statistics of each individual player that took part on it.
 
 ## Materials used
-Kaggle dataset for 2008-2019 KHL game results https://www.kaggle.com/vadimgladky/ice-hockey-khl-dataset
+All data used in this project are courtesy of KHL and their website, https://en.khl.ru/.
