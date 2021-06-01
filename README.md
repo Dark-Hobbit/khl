@@ -24,20 +24,21 @@ One way it could be compared is by using the created model before a new match to
 
 ## Project life cycle
 ### Completed
-I have obtained the data on each individual player to ever participate in a KHL match. This includes not only personal information such as age and weight but also the statistics for every season he has played at least one match in and every match that player has played in.
+I have obtained the data on each individual player to ever participate in a KHL match. This includes not only personal information such as age and weight but also the statistics for every season that player has played at least one match in and every match he has played in.
 
 The season data is separated into Regular season and Playoff, since the two present a rather different style of play and not all players enjoy the opportunity of their team making it into the playoffs. Additionally, there is a third type for off-season tournaments which are not considered to be official matches and are thus absent from the player's match data.
 
-In case the data becomes too heavy to be hosted on GitHub anymore (which the match performance dataset is getting close to), I have uploaded it to Kaggle with the following link: https://www.kaggle.com/darkhobbit/ice-hockey-khl-player-data.
+In case the data becomes too heavy to be hosted on GitHub anymore (which the match performance dataset is getting close to), I have uploaded it to Kaggle with the following link: https://www.kaggle.com/darkhobbit/kontinental-hockey-league-khl-player-performance.
 
 ### In work
+Uploading the data to an AWS-hosted PostgreSQL database. SQL joins would allow us to easily work with data from multiple levels at once.
 
 ### Further plans
-I am no longer going to use the dataset of the game outcomes from Kaggle. Both updating it and integrating it with my player-level data could create too many problems to be a viable strategy. Instead, I am going to attempt scraping the history of each team's matches over time the same way as was done for the players.
+We need to process the gathered data and prepare it for further analysis. This is particularly important for any Machine Learning models I might attempt to train on this dataset.
+
+In the future, I am also going to attempt scraping the history of each team's matches over time the same way as was done for the players.
 
 The KHL website might not store the necessary data in an easy-to-access form. In that case, we can take an approach of reconstructing the statistics for a match by aggregating the statistics of each individual player that took part on it.
 
-We also need to process the gathered data and prepare it for further analysis. This is particularly important for any Machine Learning models I might attempt to train on this dataset.
-
 ## Materials used
-All data used in this project are courtesy of KHL and their website, https://en.khl.ru/.
+All data used in this project belong to the KHL and were taken from the league's website, https://en.khl.ru/.
