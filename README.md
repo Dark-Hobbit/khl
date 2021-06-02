@@ -30,8 +30,10 @@ The season data is separated into Regular season and Playoff, since the two pres
 
 In case the data becomes too heavy to be hosted on GitHub anymore (which the match performance dataset is getting close to), I have uploaded it to Kaggle with the following link: https://www.kaggle.com/darkhobbit/kontinental-hockey-league-khl-player-performance.
 
+The data have also been uploaded to an AWS-hosted PostgreSQL database. However, most of the data is currently not in very suitable format so analysis cannot be started yet.
+
 ### In work
-Uploading the data to an AWS-hosted PostgreSQL database. SQL joins would allow us to easily work with data from multiple levels at once.
+Creating a guest account to allow public access to the AWS-hosted PostgreSQL database containing all the data without compromising its integrity.
 
 ### Further plans
 We need to process the gathered data and prepare it for further analysis. This is particularly important for any Machine Learning models I might attempt to train on this dataset.
