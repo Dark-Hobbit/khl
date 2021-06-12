@@ -24,6 +24,7 @@ One way it could be compared is by using the created model before a new match to
 
 ## Project life cycle
 ### Completed
+#### Stage 1
 I have obtained the data on each individual player to ever participate in a KHL match. This includes not only personal information such as age and weight but also the statistics for every season that player has played at least one match in and every match he has played in.
 
 The season data is separated into Regular season and Playoff, since the two present a rather different style of play and not all players enjoy the opportunity of their team making it into the playoffs. Additionally, there is a third type for off-season tournaments which are not considered to be official matches and are thus absent from the player's match data.
@@ -32,15 +33,30 @@ In case the data becomes too heavy to be hosted on GitHub anymore (which the mat
 
 The data have also been uploaded to an AWS-hosted PostgreSQL database. Connect through hockey.cztadsor7fc9.eu-central-1.rds.amazonaws.com by using "guest" as both login and password.
 
-Stage 1 is finished, now onto Stage 2!
+#### Stage 2
+Most of the data was coriginally not in very suitable format to do anything with it. To begin with, I have separated the season data into career statistics and actual season statistics. After that, a number of changes were introduced to the dataset.
+
+First of all, the performance indicators are different for skaters (forwards and defencemen) and goalies (goalkeepers). Therefore, the data were separated into two dataframes for each period of interest (career/season/match). That allowed to get rid of the columns that are not relevant to a specific player and somewhat reduce the file sizes.
+
+Most numeric values in the raw data files were also stored as floats and some even as objects. I have changed most of the values to integers (where applicable), in big part due to the separation of skaters and goalies. 
+
+Finally, the data in some columns of the original tables was split into multiple columns each. That includes Season (career/season/match), Teams (match) and Score (match). For both the icetime per game and total icetime a new column was created, stored as integer containing the icetime in seconds.
+
+Important note: Hits, Shots blocked and Penalties against were not recorded in the KHL until season 2014/2015. I have decided to keep them as null values rather than replace with zeros, to avoid accidentally using the values in an analysis. However, that is something to be kept in mind.
 
 ### In work
-Most of the data is currently not in very suitable format so there is not much we can do with it. Stage 2 will be all about processing that data for further analysis. This is particularly important for any Machine Learning models I might attempt to train on this dataset.
+The processed data needs to be uploaded to the AWS-hosted PostgreSQL database and Kaggle. After that, and if everything seems fine with data, we can start searching for insights in it. Mostly a lot of playing with various Machine Learning models and our player-level data.
+
+One interesting idea would be to create match
 
 ### Further plans
 In the future, I am also going to attempt scraping the history of each team's matches over time the same way as was done for the players.
 
 The KHL website might not store the necessary data in an easy-to-access form. In that case, we can take an approach of reconstructing the statistics for a match by aggregating the statistics of each individual player that took part on it.
+
+One interesting idea using team-level data would be adding dummies for every player in KHL history to the features. That way, we can train the model to try and predict the outcome of a match based primarily on the player roster of the two teams (and some added features such as year). Those dummies could be multiplied by the prospective player's average icetime.
+
+Such an analysis would question how much of a team's success is attributed to their roster and how much to the staff in charge of the team. In addition, using polynomial features would allow us to try and catch the synergy between players. And, of course, we could compare the levels of effect different players have on their team's success.
 
 ## Materials used
 All data used in this project belong to the KHL and were taken from the league's website, https://en.khl.ru/.
