@@ -36,25 +36,25 @@ The data have also been uploaded to an AWS-hosted PostgreSQL database. Connect t
 #### Stage 2
 Most of the data was coriginally not in very suitable format to do anything with it. To begin with, I have separated the season data into career statistics and actual season statistics. After that, a number of changes were introduced to the dataset.
 
-First of all, the performance indicators are different for skaters (forwards and defencemen) and goalies (goalkeepers). Therefore, the data were separated into two dataframes for each period of interest (career/season/match). That allowed to get rid of the columns that are not relevant to a specific player and somewhat reduce the file sizes.
+First of all, a lot of players were present in the match-level data but had no actual statistics and absent icetime. We are naturally not interested in such data, as those players have effectively not participated in the match. A small number of data points actually had proper statistics recorded but not the icetime, such observations were omitted as well. Two matches were completely dropped from the data: Vityaz - Avangard on January 9th 2010 and Slovan - Vityaz teams on January 11th 2019.
+
+Next, the performance indicators are different for skaters (forwards and defencemen) and goalies (goalkeepers). Therefore, the data were separated into two dataframes for each period of interest (career/season/match). That allowed to get rid of the columns that are not relevant to a specific player and somewhat reduce the file sizes.  
 
 Most numeric values in the raw data files were also stored as floats and some even as objects. I have changed most of the values to integers (where applicable), in big part due to the separation of skaters and goalies. 
 
-Finally, the data in some columns of the original tables was split into multiple columns each. That includes Season (career/season/match), Teams (match) and Score (match). For both the icetime per game and total icetime a new column was created, stored as integer containing the icetime in seconds.
+Finally, the data in some columns of the original tables was split into multiple columns each. That includes Season (career/season/match), Teams (match) and Score (match). New columns for created in the match-level data, containing the player's team name, the name of a winning team and unique match ID. For both the icetime per game and total icetime a new column was created, stored as integer containing the icetime in seconds.
 
 Important note: Hits, Shots blocked and Penalties against were not recorded in the KHL until season 2014/2015. I have decided to keep them as null values rather than replace with zeros, to avoid accidentally using the values in an analysis. However, that is something to be kept in mind.
 
 ### In work
-The processed data needs to be uploaded to the AWS-hosted PostgreSQL database and Kaggle. After that, and if everything seems fine with data, we can start searching for insights in it. Mostly a lot of playing with various Machine Learning models and our player-level data.
+The processed data needs to be uploaded to the AWS-hosted PostgreSQL database and Kaggle. 
 
-One interesting idea would be to create match
+I am currently playing with the idea of aggregating player dummies into a team-level data for each match. That way, we can train the model to try and predict the outcome of a match based primarily on the player roster of the two teams (and some added features such as year). Those dummies could be multiplied by the prospective player's average icetime.
 
 ### Further plans
 In the future, I am also going to attempt scraping the history of each team's matches over time the same way as was done for the players.
 
 The KHL website might not store the necessary data in an easy-to-access form. In that case, we can take an approach of reconstructing the statistics for a match by aggregating the statistics of each individual player that took part on it.
-
-One interesting idea using team-level data would be adding dummies for every player in KHL history to the features. That way, we can train the model to try and predict the outcome of a match based primarily on the player roster of the two teams (and some added features such as year). Those dummies could be multiplied by the prospective player's average icetime.
 
 Such an analysis would question how much of a team's success is attributed to their roster and how much to the staff in charge of the team. In addition, using polynomial features would allow us to try and catch the synergy between players. And, of course, we could compare the levels of effect different players have on their team's success.
 
