@@ -51,6 +51,8 @@ The processed data needs to be uploaded to the AWS-hosted PostgreSQL database an
 
 I am currently playing with the idea of aggregating player dummies into a team-level data for each match. That way, we can train the model to try and predict the outcome of a match based primarily on the player roster of the two teams (and some added features such as year). Those dummies could be multiplied by the prospective player's average icetime.
 
+So far, the analysis is not showing any satisfactory accuracy. Using a single dummy variable for a player over his whole KHL career is obviously not the right way to go, and separating it into multiple dummy variables drastically reduces the number of observations for each one of them. A number of approaches all give approximately the same results. I still intend to test out the idea some more, including using different classification models. However, if none of them yield a better result I might have to stash the idea until a better implementation comes to mind. 
+
 ### Further plans
 In the future, I am also going to attempt scraping the history of each team's matches over time the same way as was done for the players.
 
