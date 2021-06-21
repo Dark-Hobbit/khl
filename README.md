@@ -49,7 +49,7 @@ Important note: Hits, Shots blocked and Penalties against were not recorded in t
 ### In work
 The processed data needs to be uploaded to the AWS-hosted PostgreSQL database and Kaggle. 
 
-I am currently playing with the idea of aggregating player dummies into a team-level data for each match. That way, we can train the model to try and predict the outcome of a match based primarily on the player roster of the two teams (and some added features such as year). Those dummies could be multiplied by the prospective player's average icetime.
+I am currently playing with the idea of aggregating player dummies into a team-level data for each match. That way, we can train the model to try and predict the outcome of a match based primarily on the player roster of the two teams (and some added features such as year). Those dummies could be multiplied by the prospective player's average icetime. Such an analysis would question how much of a team's success is attributed to their roster and how much to the staff in charge of the team. In addition, using polynomial features would allow us to try and catch the synergy between players. And, of course, we could compare the levels of effect different players have on their team's success.
 
 So far, the analysis is not showing any satisfactory accuracy. The first results of the simplest version of model were actually not that bad on paper, several slightly different versions achieving close to 60-62% accuracy with a much better performance on home wins - around 60% precision and 80% recall for an f-score of 0.68. However, the way those models were designed does not allow us to rely on the results since they only had dummies for individual players and for specific years, but not for an individual player in a specific year.
 
@@ -59,8 +59,6 @@ Effectively, it is a single dummy variable for a player over his whole KHL caree
 In the future, I am also going to attempt scraping the history of each team's matches over time the same way as was done for the players.
 
 The KHL website might not store the necessary data in an easy-to-access form. In that case, we can take an approach of reconstructing the statistics for a match by aggregating the statistics of each individual player that took part on it.
-
-Such an analysis would question how much of a team's success is attributed to their roster and how much to the staff in charge of the team. In addition, using polynomial features would allow us to try and catch the synergy between players. And, of course, we could compare the levels of effect different players have on their team's success.
 
 ## Materials used
 All data used in this project belong to the KHL and were taken from the league's website, https://en.khl.ru/.
