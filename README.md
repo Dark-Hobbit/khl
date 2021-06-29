@@ -49,11 +49,23 @@ Important note: Hits, Shots blocked and Penalties against were not recorded in t
 The data have been uploaded to an AWS-hosted PostgreSQL database as mentioned in the previous stage.
 
 ### In work
+#### Match winner predictions
 I am currently playing with the idea of aggregating player dummies into a team-level data for each match. That way, we can train the model to try and predict the outcome of a match based primarily on the player roster of the two teams (and some added features such as year). Those dummies could be multiplied by the prospective player's average icetime. Such an analysis would question how much of a team's success is attributed to their roster and how much to the staff in charge of the team. In addition, using polynomial features would allow us to try and catch the synergy between players. And, of course, we could compare the levels of effect different players have on their team's success.
 
 So far, the analysis is not showing any satisfactory accuracy. The first results of the simplest version of model were actually not that bad on paper, several slightly different versions achieving close to 60-62% accuracy with a much better performance on home wins - around 60% precision and 80% recall for an f-score of 0.68. However, the way those models were designed does not allow us to rely on the results since they only had dummies for individual players and for specific years, but not for an individual player in a specific year.
 
 Effectively, it is a single dummy variable for a player over his whole KHL career which is obviously not the right way to go. Separating it into multiple dummy variables drastically reduces the number of observations for each one of them, reducing the model's accuracy as well. A number of approaches all give approximately the same results. I still intend to test out the idea some more using different classification models, and taking the icetime into account. However, I am now going to move the idea into a separate branch to test out when a better implementation comes to mind. 
+
+#### Season points prediction
+Another idea in the works is trying to predict a player's season performance based on his performance in the past several seasons. Specifically, the first target variable of interest is how many points a player will get over the season. To better account for the fact that not all players get the same icetime, I have tried using the measure of points per hour of icetime.
+
+This idea has taken around a week of work and several dozen different approaches by now, with both simple and complex models often yielding similar-looking results. From the analysis it appears that predicting season performance off the past three seasons seems to be the most accurate, as it performs the best when used in a simple benchmark such as average number of points per hour over 1/2/3 seasons.
+
+Such a benchmark, used with a 3-year period, already performs with the RMSE (root-mean-square error) of around 0.49-0.5 points per hour. The best results I have managed to get with Machine Learning so far had the RMSE of around 0.48-0.49 points per hour, only slightly better than the benchmark mentioned above. This appears to be due to inherent variation in the data that complicates the use of Machine Learning models, including a fairly small number of high-performing players that the models tend to severely underestimate.
+
+The main factor is perhaps the inequality in the teams' strength, with some teams having consistently better results than the others in terms of the individual players' performance. The difference can reach up to 0.3 points per hour between the average players of two different teams. And while capturing such a gap is exactly the thing we are looking for, having to account for the much more frequent changes of teams in KHL compared to NHL significantly drops the number of observations. After all, we not only need dummy variables for every team but actually for every team for every of the 2/3/4 seasons (including the current one) that we are considering in our analysis.
+
+Therefore, this analysis is going to be suspended as well until I find a better way to handle it. 
 
 ### Further plans
 In the future, I am also going to attempt scraping the history of each team's matches over time the same way as was done for the players.
