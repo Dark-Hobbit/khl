@@ -69,56 +69,52 @@ class Match:
     
     def get_player_summary(self, protocol: str) -> None:
 
-        def parse_players_group(players_group: bs4.element.Tag) -> tuple[list, list[list, ...]]:
-#             team_name = players_group.p.text.strip()
-            player_position = players_group.h3.text.strip()
-            table = players_group.table.find_all('tr')
-            header = ['Position']
-            
-            for line in table[0].find_all('th'):
+        def parse_table_header(table_header: bs4.element.Tag) -> list[str, ...]:
+            header = []
+            for line in table_header.find_all('th'):
                 if line.title:
                     header.append(line.title.strip())
                 elif line.text.strip() != 'Player':
                     header.append(line.text.strip())
-                else:
-                    header.extend(['ID', 'Name'])
-                    
-            stats = []
-            for line in table[1:]:
-                values = [player_position]
-                for cell in line.find_all('th'):
-                    if cell.a:
-                        player_id = cell.a['href'].split('/')[-2]
-                        values.append(player_id)
-                    values.append(cell.text.strip())
-                stats.append(values)
-            
-            return header, stats
+            return header
         
-        def parse_players_team(players_team: list[bs4.element.Tag, ...], team_name: str) -> list[Player, ...]:
+        def parse_player_stats(player_stats: bs4.element.Tag) -> tuple[str, str, dict[str, int]]:
+            stats = []
+            for value in player_stats.find_all('th'):
+                if value.a:
+                    player_id = value.a['href'].split('/')[-2]
+                    name = value.a.text.strip()
+                else:
+                    stats.append(value.text.strip())
+            return player_id, name, stats
+        
+        def parse_player_table(player_table: bs4.element.Tag, team_name: str) -> list[Player, ...]:
+            position = player_table.h3.text.strip().rstrip('s')
+            header = parse_table_header(player_table.thead)
             players = []
-            for player_group in players_team:
-                header, stats = parse_players_group(player_group)
-                for line in stats:
-                    player_stats = dict(zip(header, line))
-                    player_stats['Team'] = team_name
-
-                    player_id = player_stats['ID']
-                    player_name = player_stats['Name']
-                    player_position = player_stats['Position']
-                    del player_stats['ID'], player_stats['Name'], player_stats['Position']
-
-                    player = Player(player_id, player_name, player_position)
-                    player.add_match_record(self.season_id, self.match_id, player_stats)
-                    players.append(player)
+            for line in player_table.tbody.find_all('tr'):
+                player_id, name, values = parse_player_stats(line)
+                
+                stats = dict(zip(header, values))
+                stats['Team'] = team_name
+                player = Player(player_id, name, position)
+                player.add_match_record(self.season_id, self.match_id, stats)
+                players.append(player)
             return players
-            
+        
+        def parse_team_players(player_tables: list[bs4.element.Tag], team_name: str) -> list[Player, ...]:
+            team_players = []
+            for table in player_tables:
+                players = parse_player_table(table, team_name)
+                team_players.extend(players)
+            return team_players
         
         main = bs4.BeautifulSoup(protocol, 'html.parser').find('main')
         home_team_players = main.find_all(class_='wrapper-content mr-30__1280')[:3]
+        self.home_team_players = parse_team_players(home_team_players, self.home_team)
         away_team_players = main.find_all(class_='wrapper-content mr-30__1280')[3:6]
-        self.home_team_players = parse_players_team(home_team_players, self.home_team)
-        self.away_team_players = parse_players_team(away_team_players, self.away_team)
+        self.away_team_players = parse_team_players(away_team_players, self.away_team)
+        
         self.parsed = True
         
         
@@ -135,4 +131,3 @@ class Player:
         if season_id not in self.records:
             self.records[season_id] = {}
         self.records[season_id][match_id] = match_stats
-        
