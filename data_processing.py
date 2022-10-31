@@ -20,7 +20,15 @@ class Match:
         else:
             return object.__repr__(self)
     
-    
+    @property
+    def dict_(self) -> dict:
+        result = copy.deepcopy(vars(self))
+        for i in range(len(result['home_team_players'])):
+            result['home_team_players'][i] = vars(result['home_team_players'][i])
+        for i in range(len(result['away_team_players'])):
+            result['away_team_players'][i] = vars(result['away_team_players'][i])
+        return result
+
     def get_match_protocol(self) -> None:
         url = f'https://en.khl.ru/game/{self.season_id}/{self.match_id}/protocol/'
         response = requests.get(url)
