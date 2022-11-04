@@ -35,8 +35,8 @@ def parse_protocol(protocol: str, season_id: str, match_id: str) -> dict:
                      away_team = away_name, away_team_coach = away_coach)
 
     score = main.find('div', 'preview-frame__center')
-    winner, length = get_score(score)
-    match_data.update(winner = match_data[winner], length = length)
+    score_string, winner, length = get_score(score)
+    match_data.update(score = score_string, winner = match_data[winner], length = length)
     
     home_tables = main.find_all(class_='wrapper-content mr-30__1280')[:3]
     home_players = parse_team_players(home_tables, home_name, season_id, match_id)
@@ -50,26 +50,31 @@ def get_team_data(team: bs4.element.Tag) -> tuple[str, str]:
     coach = team.find('p', class_='preview-frame__club-nameTrainer').text.strip()
     return name, coach
 
-def get_score(score: bs4.element.Tag) -> tuple[str, str]:
+def get_score(score: bs4.element.Tag) -> tuple[str, str, str]:
     score = score.p.text.split()
+    if len(score) < 2 or not score[0].isnumeric() or not score[1].isnumeric():
+        return
+    score_string = f'{score[0]} - {score[1]}'
     winner = 'undecided'
-    length = 'undecided'
     if score[0] > score[1]:
         winner = 'home_team'
     elif score[0] < score[1]:
         winner = 'away_team'
     else:
-        logger.error(f'Match is a draw')
-
+        logger.error(f'Match is a draw?')
+    
+    length = 'undecided'
     if len(score) == 2:
         length = 'normal'
     elif score[2] == 'OT':
         length = 'overtime'
+        score_string += ' OT'
     elif score[2] == 'SO':
         length = 'shootouts'
+        score_string += ' SO'
     else:
         logger.error(f'Match has weird length')
-    return winner, length 
+    return score_string, winner, length 
 
 def parse_table_header(table_header: bs4.element.Tag) -> list[str, ...]:
     header = []
