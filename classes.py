@@ -25,10 +25,12 @@ class Match:
     @property
     def dict_(self) -> dict:
         result = copy.deepcopy(vars(self))
-        for i in range(len(result['home_team_players'])):
-            result['home_team_players'][i] = vars(result['home_team_players'][i])
-        for i in range(len(result['away_team_players'])):
-            result['away_team_players'][i] = vars(result['away_team_players'][i])
+        if 'home_team_players' in result:
+            for i, player in enumerate(result['home_team_players']):
+                result['home_team_players'][i] = player.dict_
+        if 'away_team_players' in result:
+            for i, player in enumerate(result['away_team_players']):
+                result['away_team_players'][i] = player.dict_
         return result
         
 class Player:
@@ -47,3 +49,8 @@ class Player:
         if season_id not in self.stats:
             self.stats[season_id] = {}
         self.stats[season_id][match_id] = match_stats
+    
+    @property
+    def dict_(self) -> dict:
+        result = copy.deepcopy(vars(self))
+        return result
